@@ -128,38 +128,196 @@ A declarative, reproducible system configuration for macOS using [Nix](https://n
     └── overlays.nix             # Nixpkgs overlays
 ```
 
-## Quick Reference
+## Nix Cheat Sheet for Beginners
 
-### Essential Commands
+### Core Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Flake** | A self-contained Nix project with `flake.nix` and `flake.lock` |
+| **Derivation** | A build recipe that produces packages in `/nix/store` |
+| **Generation** | A snapshot of your system configuration (enables rollback) |
+| **Channel** | Legacy package source (we use flakes instead) |
+| **nixpkgs** | The main repository of ~100,000+ Nix packages |
+
+### Daily Commands (Most Used)
 
 ```bash
-# Rebuild and switch to new configuration
-rebuild
+# Apply your configuration changes (use after editing .nix files)
+rebuild                    # alias defined in zsh config
 # or full command:
-darwin-rebuild switch --flake ~/.config/nix
+sudo darwin-rebuild switch --flake ~/.config/nix
 
-# Update all flake inputs (nixpkgs, home-manager, etc.)
-cd ~/.config/nix && nix flake update
-
-# Update specific input
-cd ~/.config/nix && nix flake lock --update-input nixpkgs
-
-# Clean up old generations (free disk space)
-nix-clean
-# or full command:
-nix-collect-garbage -d
-
-# Show what would change without applying
+# Preview changes without applying (dry run)
 darwin-rebuild build --flake ~/.config/nix
 
-# Roll back to previous generation
-darwin-rebuild --rollback
+# Update all packages to latest versions
+cd ~/.config/nix && nix flake update && rebuild
 
-# List all generations
+# Clean up disk space (remove old generations)
+nix-clean                  # alias defined in zsh config
+# or full command:
+nix-collect-garbage -d
+```
+
+### System Management
+
+```bash
+# List all system generations (history of configurations)
 darwin-rebuild --list-generations
 
-# Search for packages
+# Roll back to previous generation
+sudo darwin-rebuild --rollback
+
+# Switch to specific generation number
+sudo darwin-rebuild switch --generation 42
+
+# See current system info
+darwin-rebuild --show-trace
+
+# Check which generation is active
+ls -la /run/current-system
+```
+
+### Package Management
+
+```bash
+# Search for packages (online)
 nix search nixpkgs <package-name>
+nix search nixpkgs nodejs
+nix search nixpkgs "python.*"
+
+# Show package info
+nix-env -qaP --description <package-name>
+
+# Try a package temporarily (doesn't install permanently)
+nix shell nixpkgs#cowsay
+nix shell nixpkgs#nodejs_22
+
+# Run a command from a package without installing
+nix run nixpkgs#cowsay -- "Hello Nix!"
+
+# List installed packages (user profile)
+nix profile list
+
+# See what's in the store
+nix path-info -rsSh /run/current-system | sort -k2 -h | tail -20
+```
+
+### Flake Commands
+
+```bash
+# Show flake info
+nix flake show
+
+# Check flake for errors
+nix flake check
+
+# Update all inputs (nixpkgs, home-manager, etc.)
+nix flake update
+
+# Update specific input only
+nix flake lock --update-input nixpkgs
+nix flake lock --update-input home-manager
+
+# Show current input versions
+nix flake metadata
+
+# Format all .nix files
+nix fmt
+```
+
+### Development Environments
+
+```bash
+# Enter a dev shell defined in flake.nix
+nix develop
+
+# Enter dev shell with specific packages
+nix develop --impure --expr 'with import <nixpkgs> {}; mkShell { packages = [ nodejs python3 ]; }'
+
+# Use direnv for auto-activation (already configured)
+# Just cd into a directory with .envrc containing: use flake
+echo "use flake" > .envrc
+direnv allow
+```
+
+### Debugging & Troubleshooting
+
+```bash
+# Build with verbose output
+darwin-rebuild build --flake ~/.config/nix --show-trace
+
+# Check why a package is in your closure
+nix why-depends /run/current-system nixpkgs#<package>
+
+# Visualize dependencies
+nix-tree /run/current-system
+
+# Check store path size
+nix path-info -sSh /run/current-system
+
+# Verify store integrity
+nix store verify --all
+
+# Repair broken store paths
+sudo nix store repair --all
+```
+
+### Garbage Collection
+
+```bash
+# Remove all old generations (keeps current)
+nix-collect-garbage -d
+
+# Remove generations older than 30 days
+nix-collect-garbage --delete-older-than 30d
+
+# Just list what would be deleted
+nix-collect-garbage -d --dry-run
+
+# Optimize store (deduplicate files)
+nix store optimise
+```
+
+### Useful Paths
+
+| Path | Description |
+|------|-------------|
+| `~/.config/nix/` | Your Nix configuration (this repo) |
+| `/nix/store/` | All packages (immutable, content-addressed) |
+| `/run/current-system/` | Symlink to current system generation |
+| `/etc/profiles/per-user/$USER/` | User packages from Nix |
+| `~/.nix-profile/` | User profile symlinks |
+
+### Quick Edits
+
+| Task | File to Edit |
+|------|--------------|
+| Add CLI tool | `modules/shared/packages.nix` |
+| Add GUI app (Homebrew cask) | `modules/darwin/homebrew.nix` |
+| Modify shell aliases | `modules/home/shell/zsh.nix` |
+| Change macOS settings | `modules/darwin/system.nix` |
+| Modify Git config | `modules/home/shell/git.nix` |
+| Add Node.js packages | `modules/home/dev/node.nix` |
+| Add Python packages | `modules/home/dev/python.nix` |
+
+### Workflow Example
+
+```bash
+# 1. Edit configuration
+vim ~/.config/nix/modules/shared/packages.nix
+
+# 2. Test build (catches errors without applying)
+darwin-rebuild build --flake ~/.config/nix
+
+# 3. Apply changes
+rebuild   # or: sudo darwin-rebuild switch --flake ~/.config/nix
+
+# 4. Open new terminal to get updated PATH
+
+# 5. Commit your changes
+cd ~/.config/nix && git add -A && git commit -m "Add new package"
 ```
 
 ### Git Aliases (from zsh config)
@@ -210,6 +368,19 @@ nix search nixpkgs <package-name>
 | `yq` | - | YAML processor |
 | `just` | `make` | Command runner |
 
+### Development Languages & Tools
+
+| Language | Version | Package Manager | Tools |
+|----------|---------|-----------------|-------|
+| Node.js | 22 LTS | pnpm, bun, npm | typescript, prettier, ncu |
+| Python | 3.13 | uv | ruff (linter/formatter) |
+| Go | latest | go modules | gopls, golangci-lint, delve |
+| Rust | via rustup | cargo | cargo-watch, cargo-edit, cargo-nextest, cargo-audit |
+| PHP | 8.3 | composer | phpstan, php-cs-fixer |
+| Java | 21 (Temurin) | maven, gradle | jdt-language-server |
+
+**Note**: For Rust, after rebuild run `rustup default stable` to install the default toolchain.
+
 ## What's Managed by Nix
 
 ### System Level (nix-darwin)
@@ -252,16 +423,17 @@ nix search nixpkgs <package-name>
 - [x] Migrate Git + SSH for GitHub
 - [x] First successful darwin-rebuild switch
 
-### Phase 2: Development Tools (PENDING)
+### Phase 2: Development Tools (COMPLETED)
 
-- [ ] Node.js 22 LTS (replaces nvm)
-- [ ] Bun
-- [ ] Python + uv (uv managed by Nix)
-- [ ] Go
-- [ ] Rust via rustup/fenix
-- [ ] PHP
-- [ ] Java 21 (replaces sdkman)
-- [ ] Common dev tools
+- [x] Node.js 22 LTS (replaces nvm)
+- [x] Bun
+- [x] pnpm
+- [x] Python 3.13 + uv + ruff
+- [x] Go + gopls + golangci-lint + delve
+- [x] Rust via rustup + cargo tools
+- [x] PHP 8.3 + Composer + phpstan + php-cs-fixer
+- [x] Java 21 (Temurin) + Maven + Gradle (replaces sdkman)
+- [x] Common dev tools (hyperfine, sd, procs, dust, duf)
 
 ### Phase 3: Editor - Nixvim (PENDING)
 
@@ -300,16 +472,21 @@ Your original dotfiles were preserved with `.backup` extension:
 | `~/.config/gh/config.yml` | `~/.config/gh/config.yml.backup` |
 | `~/.ssh/config` | `~/.ssh/config.backup` |
 
-## Tools Still Using Legacy Installation
+## Tools Migrated from Legacy Installation
 
-These tools are still sourced from their original locations (will be migrated in Phase 2):
+These tools have been migrated from their legacy locations to Nix:
 
-| Tool | Current Location | Will Migrate To |
-|------|------------------|-----------------|
-| nvm | `~/.nvm` | Nix nodejs |
-| sdkman | `~/.sdkman` | Nix jdk |
+| Tool | Old Location | Now Managed By |
+|------|--------------|----------------|
+| nvm | `~/.nvm` | Nix nodejs_22 |
+| sdkman | `~/.sdkman` | Nix temurin-bin-21 |
 | Bun | `~/.bun` | Nix bun |
 | pnpm | `~/Library/pnpm` | Nix pnpm |
+
+**Cleanup**: You can now remove the legacy directories after verifying everything works:
+```bash
+rm -rf ~/.nvm ~/.sdkman ~/.bun ~/Library/pnpm
+```
 
 ## Troubleshooting
 

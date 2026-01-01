@@ -12,6 +12,14 @@
     # Terminal configuration
     ../../modules/home/terminal/ghostty.nix
 
+    # Development tools (Phase 2)
+    ../../modules/home/dev/node.nix
+    ../../modules/home/dev/python.nix
+    ../../modules/home/dev/go.nix
+    ../../modules/home/dev/rust.nix
+    ../../modules/home/dev/php.nix
+    ../../modules/home/dev/java.nix
+
     # Shared packages
     ../../modules/shared/packages.nix
   ];

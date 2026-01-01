@@ -78,31 +78,6 @@
 
     # Init content (runs after zshrc)
     initContent = ''
-      # Additional PATH entries (will be cleaned up as we migrate tools to Nix)
-
-      # pnpm (until migrated to Nix)
-      export PNPM_HOME="/Users/firas/Library/pnpm"
-      case ":$PATH:" in
-        *":$PNPM_HOME:"*) ;;
-        *) export PATH="$PNPM_HOME:$PATH" ;;
-      esac
-
-      # Bun (until migrated to Nix)
-      export BUN_INSTALL="$HOME/.bun"
-      export PATH="$BUN_INSTALL/bin:$PATH"
-      [ -s "/Users/firas/.bun/_bun" ] && source "/Users/firas/.bun/_bun"
-
-      # NVM (keeping temporarily - will be removed in Phase 2)
-      export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-      # SDKMAN (keeping temporarily - will be removed in Phase 2)
-      export SDKMAN_DIR="$HOME/.sdkman"
-      [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-      # Local bin
-      [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
-
       # Better history search with up/down arrows
       bindkey '^[[A' history-search-backward
       bindkey '^[[B' history-search-forward

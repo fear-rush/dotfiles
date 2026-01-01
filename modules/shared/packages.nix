@@ -36,6 +36,11 @@
     just # Command runner (like make)
     watchexec # File watcher
     tokei # Code statistics
+    hyperfine # Benchmarking tool
+    sd # Modern sed alternative
+    procs # Modern ps alternative
+    dust # Modern du alternative
+    duf # Modern df alternative
 
     # Nix tools
     nil # Nix LSP
