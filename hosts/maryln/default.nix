@@ -7,6 +7,8 @@
     # Import darwin-specific modules
     ../../modules/darwin/system.nix
     ../../modules/darwin/homebrew.nix
+    # Secrets management (uncomment after setting up age key)
+    # ../../modules/darwin/secrets.nix
   ];
 
   # Primary user - required for user-specific settings

@@ -25,20 +25,31 @@
     ];
 
     # GUI Applications (Casks)
-    # These will be expanded in Phase 4
     casks = [
       # Browsers
       "google-chrome"
 
       # Development
-      "zed"
-      "orbstack"
+      "zed" # Modern editor
+      "orbstack" # Docker & Linux VMs
 
-      # Utilities
-      "ghostty" # We'll also configure via home-manager
+      # API Development
+      "bruno" # Open-source API client (Postman alternative)
 
-      # VPN
-      # "openvpn-connect" # Uncomment when ready
+      # Database Tools
+      "tableplus" # Database GUI
+      "dbngin" # Database version manager
+
+      # Terminal
+      "ghostty"
+
+      # Communication
+      "slack"
+      "discord"
+      "zoom"
+
+      # Productivity
+      "rectangle" # Window management
     ];
 
     # Mac App Store apps (requires mas CLI)

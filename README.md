@@ -450,6 +450,11 @@ Leader key is `<Space>`. Press it and wait for which-key popup.
 - [x] Zed (editor)
 - [x] OrbStack (Docker/Linux VMs)
 - [x] Ghostty (terminal)
+- [x] Bruno (API client)
+- [x] TablePlus (database GUI)
+- [x] DBngin (database version manager)
+- [x] Slack, Discord, Zoom (communication)
+- [x] Rectangle (window management)
 
 ## Migration Progress
 
@@ -489,11 +494,12 @@ Leader key is `<Space>`. Press it and wait for which-key popup.
 - [x] Treesitter syntax highlighting
 - [x] Terminal integration (toggleterm)
 
-### Phase 4: Applications & Secrets (PENDING)
+### Phase 4: Applications & Secrets (COMPLETED)
 
-- [ ] More Homebrew casks
-- [ ] SOPS-nix for secrets
-- [ ] More macOS defaults
+- [x] Additional Homebrew casks (Bruno, TablePlus, DBngin, Slack, Discord, Zoom, Rectangle)
+- [x] SOPS-nix secrets management (age + sops installed, config ready)
+- [x] Enhanced macOS defaults (Dock animations, Finder, screenshots, Dark mode, trackpad gestures)
+- [x] Custom app preferences (Safari developer mode, TextEdit plain text, Activity Monitor)
 
 ### Phase 5: Cleanup (PENDING)
 
@@ -531,6 +537,58 @@ These tools have been migrated from their legacy locations to Nix:
 ```bash
 rm -rf ~/.nvm ~/.sdkman ~/.bun ~/Library/pnpm
 ```
+
+## Secrets Management (SOPS-nix)
+
+Store secrets (API keys, passwords) encrypted in your repo using `age` + `sops`.
+
+### Initial Setup
+
+```bash
+# 1. Create age key directory
+mkdir -p ~/.config/sops/age
+
+# 2. Generate a new age key
+age-keygen -o ~/.config/sops/age/keys.txt
+
+# 3. Get your public key (add this to secrets/.sops.yaml)
+age-keygen -y ~/.config/sops/age/keys.txt
+
+# 4. Update secrets/.sops.yaml with your public key
+vim ~/.config/nix/secrets/.sops.yaml
+
+# 5. Create secrets file from example
+cp ~/.config/nix/secrets/secrets.yaml.example ~/.config/nix/secrets/secrets.yaml
+
+# 6. Encrypt the secrets file
+sops -e -i ~/.config/nix/secrets/secrets.yaml
+
+# 7. Enable the secrets module in hosts/maryln/default.nix
+# Uncomment: ../../modules/darwin/secrets.nix
+
+# 8. Rebuild
+rebuild
+```
+
+### Working with Secrets
+
+```bash
+# Edit encrypted secrets (decrypts in memory, re-encrypts on save)
+sops ~/.config/nix/secrets/secrets.yaml
+
+# View encrypted file (to verify it's encrypted)
+cat ~/.config/nix/secrets/secrets.yaml
+
+# Secrets are available at runtime in /run/secrets/
+cat /run/secrets/github_token
+```
+
+### Important Notes
+
+- Never commit `~/.config/sops/age/keys.txt` (your private key)
+- The encrypted `secrets.yaml` is safe to commit
+- Secrets are decrypted at activation time, not build time
+- Add `secrets.yaml` to `.gitignore` until you encrypt it
 
 ## Troubleshooting
 

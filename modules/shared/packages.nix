@@ -46,6 +46,10 @@
     nil # Nix LSP
     nixfmt-rfc-style # Nix formatter
     nix-tree # Visualize nix dependencies
+
+    # Secrets management
+    age # Modern encryption tool
+    sops # Secrets OPerationS
   ];
 
   # Eza (modern ls) configuration
