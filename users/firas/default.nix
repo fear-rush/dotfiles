@@ -20,6 +20,9 @@
     ../../modules/home/dev/php.nix
     ../../modules/home/dev/java.nix
 
+    # Editor (Phase 3)
+    ../../modules/home/editors/nixvim
+
     # Shared packages
     ../../modules/shared/packages.nix
   ];

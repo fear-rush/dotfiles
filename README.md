@@ -381,6 +381,48 @@ cd ~/.config/nix && git add -A && git commit -m "Add new package"
 
 **Note**: For Rust, after rebuild run `rustup default stable` to install the default toolchain.
 
+### Neovim Keybindings (Nixvim)
+
+Leader key is `<Space>`. Press it and wait for which-key popup.
+
+| Key | Action |
+|-----|--------|
+| **General** | |
+| `<Space>w` | Save file |
+| `<Space>q` | Quit |
+| `<Space>e` | Toggle file explorer (neo-tree) |
+| `<Esc>` | Clear search highlight |
+| **Find (Telescope)** | |
+| `<Space>ff` | Find files |
+| `<Space>fg` | Live grep (search text) |
+| `<Space>fb` | Find buffers |
+| `<Space>fr` | Recent files |
+| `<Space>/` | Search in current buffer |
+| **Git** | |
+| `<Space>gg` | Open LazyGit |
+| `<Space>gs` | Git status |
+| `<Space>gc` | Git commits |
+| `<Space>gb` | Git branches |
+| **Code (LSP)** | |
+| `gd` | Go to definition |
+| `gr` | Go to references |
+| `K` | Hover documentation |
+| `<Space>ca` | Code actions |
+| `<Space>cr` | Rename symbol |
+| `<Space>cf` | Format buffer |
+| `[d` / `]d` | Previous/next diagnostic |
+| **Buffers** | |
+| `<S-h>` / `<S-l>` | Previous/next buffer |
+| `<Space>bd` | Delete buffer |
+| **Windows** | |
+| `<C-h/j/k/l>` | Navigate windows |
+| `<C-Up/Down/Left/Right>` | Resize windows |
+| **Terminal** | |
+| `<C-\>` | Toggle floating terminal |
+| `<Space>th` | Horizontal terminal |
+| `<Space>tv` | Vertical terminal |
+| `<Esc><Esc>` | Exit terminal mode |
+
 ## What's Managed by Nix
 
 ### System Level (nix-darwin)
@@ -435,15 +477,17 @@ cd ~/.config/nix && git add -A && git commit -m "Add new package"
 - [x] Java 21 (Temurin) + Maven + Gradle (replaces sdkman)
 - [x] Common dev tools (hyperfine, sd, procs, dust, duf)
 
-### Phase 3: Editor - Nixvim (PENDING)
+### Phase 3: Editor - Nixvim (COMPLETED)
 
-- [ ] Base Nixvim setup
-- [ ] LSP configuration (all languages)
-- [ ] Completion (blink.cmp)
-- [ ] UI (neo-tree, lualine, bufferline)
-- [ ] Navigation (telescope)
-- [ ] Git integration (gitsigns, lazygit)
-- [ ] Quality of life (which-key, autopairs)
+- [x] Base Nixvim setup with Catppuccin theme
+- [x] LSP for: Nix, TypeScript, Python, Go, Rust, PHP, Java, HTML/CSS, JSON, YAML, Bash, Docker
+- [x] Completion (nvim-cmp + luasnip + friendly-snippets)
+- [x] UI (neo-tree, lualine, bufferline, noice, notify)
+- [x] Navigation (telescope + fzf-native)
+- [x] Git integration (gitsigns, lazygit)
+- [x] Quality of life (which-key, autopairs, surround, comment, todo-comments, trouble)
+- [x] Treesitter syntax highlighting
+- [x] Terminal integration (toggleterm)
 
 ### Phase 4: Applications & Secrets (PENDING)
 
