@@ -58,15 +58,6 @@
     };
   };
 
-  # GitHub CLI
-  programs.gh = {
-    enable = true;
-    settings = {
-      git_protocol = "ssh";
-      prompt = "enabled";
-    };
-  };
-
   # SSH configuration
   programs.ssh = {
     enable = true;
