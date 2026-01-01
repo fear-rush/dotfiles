@@ -501,13 +501,13 @@ Leader key is `<Space>`. Press it and wait for which-key popup.
 - [x] Enhanced macOS defaults (Dock animations, Finder, screenshots, Dark mode, trackpad gestures)
 - [x] Custom app preferences (Safari developer mode, TextEdit plain text, Activity Monitor)
 
-### Phase 5: Cleanup (PENDING)
+### Phase 5: Cleanup (COMPLETED)
 
-- [ ] Remove oh-my-zsh (~/.oh-my-zsh)
-- [ ] Remove nvm (~/.nvm)
-- [ ] Remove sdkman (~/.sdkman)
-- [ ] Clean up Homebrew
-- [ ] Push to GitHub
+- [x] Legacy directories moved to `~/.legacy-backup/` (nvm, sdkman, bun, pnpm)
+- [x] Removed duplicate Homebrew packages (git, curl, wget, jq, ripgrep, fzf, htop, starship, neovim, go, golangci-lint, gh, php, composer)
+- [x] Homebrew auto-removed 24 unneeded dependencies
+- [x] Freed ~2.7GB of disk space
+- [x] All tools verified working from Nix
 
 ## Backed Up Files
 
@@ -533,9 +533,10 @@ These tools have been migrated from their legacy locations to Nix:
 | Bun | `~/.bun` | Nix bun |
 | pnpm | `~/Library/pnpm` | Nix pnpm |
 
-**Cleanup**: You can now remove the legacy directories after verifying everything works:
+**Status**: Legacy directories have been moved to `~/.legacy-backup/`.
+To permanently delete them and free ~2.3GB:
 ```bash
-rm -rf ~/.nvm ~/.sdkman ~/.bun ~/Library/pnpm
+rm -rf ~/.legacy-backup
 ```
 
 ## Secrets Management (SOPS-nix)
